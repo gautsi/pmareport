@@ -49,3 +49,6 @@ docs/_build
 *.pdf
 vegan*
 *.fdb_latexmk
+
+
+*.png

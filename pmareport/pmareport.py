@@ -3,6 +3,8 @@
 
 import pandas as pd
 import collections
+import seaborn as sns
+from matplotlib import pyplot as plt
 
 
 def read_data(fp='../data/pmadata.csv'):
@@ -63,3 +65,22 @@ class Clinic(object):
                 per=100*float(count)/len(self.df)
                 )
             print(print_str)
+
+    def make_pairplot(self):
+        pair_grid_vars = [
+            'AGE',
+            'delay',
+            'appt_time',
+            'month',
+            'num_appts',
+            'dayofweek'
+            ]
+        g = sns.PairGrid(
+            data=self.df,
+            vars=pair_grid_vars,
+            hue='PATIENT_CONDITION'
+            )
+        g = g.map_diag(plt.hist, edgecolor="w")
+        g = g.map_offdiag(plt.scatter, edgecolor='w')
+        g.add_legend(fontsize=20, markerscale=2)
+        g.savefig('features_by_condition.png', dpi=300)
