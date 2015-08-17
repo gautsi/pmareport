@@ -16,7 +16,7 @@ class Clinic(object):
     A collection of functions for the pma report analysis.
     '''
 
-    def __init__(self, df=None, fp='../data/pmadata.csv'):
+    def __init__(self, df=None, fp='../data/pmadata.csv', drop_redun=True):
 
         if df is None:
             self.df = read_data(fp)
@@ -64,6 +64,9 @@ class Clinic(object):
             lambda x: self.get_appt_pos(x, doc=True)
             )
 
+        if drop_redun:
+            self.drop_redundant()
+
     def drop_redundant(
             self,
             cols=[
@@ -75,7 +78,8 @@ class Clinic(object):
                 ]
             ):
         for col in cols:
-            self.df.drop(col, axis=1, inplace=True)
+            if col in self.df.columns:
+                self.df.drop(col, axis=1, inplace=True)
 
     def print_counts(self, col):
         c = collections.Counter(self.df[col])
