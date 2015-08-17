@@ -56,6 +56,14 @@ class Clinic(object):
         num_appts = self.df.groupby('date').count().PATIENT_ID
         self.df['num_appts'] = self.df.date.apply(lambda x: num_appts[x])
 
+        # add features: position of the appt in the day, and by doctor
+        self.df['appt_pos_overall'] = self.df.PATIENT_ID.apply(
+            self.get_appt_pos
+            )
+        self.df['appt_pos_doctor'] = self.df.PATIENT_ID.apply(
+            lambda x: self.get_appt_pos(x, doc=True)
+            )
+
     def print_counts(self, col):
         c = collections.Counter(self.df[col])
         for cat, count in c.most_common():
@@ -66,21 +74,62 @@ class Clinic(object):
                 )
             print(print_str)
 
-    def make_pairplot(self):
-        pair_grid_vars = [
-            'AGE',
-            'delay',
-            'appt_time',
-            'month',
-            'num_appts',
-            'dayofweek'
-            ]
+    def get_appt_pos(self, pid, doc=False):
+        appt_row = self.df[self.df.PATIENT_ID == pid]
+        day = appt_row.date.iloc[0]
+        sched_time = appt_row.sched.iloc[0]
+        if doc:
+            doctor = appt_row.PROVIDER_NAME.iloc[0]
+            appts_that_day = self.df[
+                (self.df.date == day) & (self.df.PROVIDER_NAME == doctor)
+                ]
+        else:
+            appts_that_day = self.df[self.df.date == day]
+        sched_times = appts_that_day.groupby('sched').sched.max()
+        appt_pos = list(sched_times).index(sched_time)
+        return appt_pos
+
+    def make_pairplot(
+            self,
+            df=None,
+            pair_vars=[
+                'AGE',
+                'delay',
+                'appt_time',
+                'month',
+                'num_appts',
+                'dayofweek'
+                ],
+            hue='PATIENT_CONDITION',
+            file_name=None
+            ):
+        if df is None:
+            df = self.df
         g = sns.PairGrid(
             data=self.df,
-            vars=pair_grid_vars,
-            hue='PATIENT_CONDITION'
+            vars=pair_vars,
+            hue=hue
             )
         g = g.map_diag(plt.hist, edgecolor="w")
         g = g.map_offdiag(plt.scatter, edgecolor='w')
         g.add_legend(fontsize=20, markerscale=2)
-        g.savefig('features_by_condition.png', dpi=300)
+        if file_name:
+            g.savefig(file_name, dpi=300)
+        else:
+            return g
+
+    def make_scatter(
+            self,
+            hue='PATIENT_CONDITION',
+            size=4,
+            xvar='AGE',
+            yvar='appt_time',
+            file_name=None
+            ):
+        g = sns.FacetGrid(data=self.df, hue=hue, size=size)
+        g = g.map(plt.scatter, xvar, yvar, edgecolor='w')
+        g.add_legend(fontsize=10, markerscale=2)
+        if file_name:
+            g.savefig('age_appt_cond.png', dpi=300)
+        else:
+            return g
