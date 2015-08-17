@@ -64,6 +64,19 @@ class Clinic(object):
             lambda x: self.get_appt_pos(x, doc=True)
             )
 
+    def drop_redundant(
+            self,
+            cols=[
+                'VISIT_DATE',
+                'PT_SCHEDULED_APPT',
+                'PT_ARRIVE_TIME',
+                'PT_START_TIME',
+                'PT_END_TIME'
+                ]
+            ):
+        for col in cols:
+            self.df.drop(col, axis=1, inplace=True)
+
     def print_counts(self, col):
         c = collections.Counter(self.df[col])
         for cat, count in c.most_common():
@@ -106,7 +119,7 @@ class Clinic(object):
         if df is None:
             df = self.df
         g = sns.PairGrid(
-            data=self.df,
+            data=df,
             vars=pair_vars,
             hue=hue
             )
@@ -120,13 +133,16 @@ class Clinic(object):
 
     def make_scatter(
             self,
+            df=None,
             hue='PATIENT_CONDITION',
             size=4,
             xvar='AGE',
             yvar='appt_time',
             file_name=None
             ):
-        g = sns.FacetGrid(data=self.df, hue=hue, size=size)
+        if df is None:
+            df = self.df
+        g = sns.FacetGrid(data=df, hue=hue, size=size)
         g = g.map(plt.scatter, xvar, yvar, edgecolor='w')
         g.add_legend(fontsize=10, markerscale=2)
         if file_name:
