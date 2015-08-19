@@ -4,14 +4,6 @@ pmareport package
 Submodules
 ----------
 
-pmareport.pmareport module
---------------------------
-
-.. automodule:: pmareport.pmareport
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pmareport.predictors module
 ---------------------------
 
