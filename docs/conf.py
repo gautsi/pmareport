@@ -40,7 +40,9 @@ MOCK_MODULES = [
     'sklearn.feature_extraction',
     'seaborn',
     'matplotlib',
-    'matplotlib.pyplot'
+    'matplotlib.pyplot',
+    'sklearn.tree',
+    'sklearn.cross_validation'
     ]
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
