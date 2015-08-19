@@ -50,7 +50,7 @@ class Clinic(object):
         self.df['delay'] = (self.df.start - self.df.arrive).dt.seconds/60.0
         self.df['appt_time'] = (self.df.end - self.df.start).dt.seconds/60.0
         self.df['month'] = self.df.date.dt.month
-        self.df['dayofweek'] = self.df.date.dt.dayofweek
+        # self.df['dayofweek'] = self.df.date.dt.dayofweek
 
         # add feature: number of appointments that day
         num_appts = self.df.groupby('date').count().PATIENT_ID
@@ -66,6 +66,49 @@ class Clinic(object):
 
         if drop_redun:
             self.drop_redundant()
+
+        self.df['cond'] = self.df.PATIENT_CONDITION.apply(self.abbrev)
+
+        self.df['schedd'] = self.time_to_decimal(self.df.sched)
+        self.df['startd'] = self.time_to_decimal(self.df.start)
+        self.df['endd'] = self.time_to_decimal(self.df.end)
+        self.df['arrived'] = self.time_to_decimal(self.df.arrive)
+
+        self.df['since_prev_sched'] = self.df.PATIENT_ID.apply(
+            self.get_time_between
+            )
+
+    def get_time_between(self, pid):
+        row = self.df[self.df.PATIENT_ID == pid]
+        doc = row.PROVIDER_NAME.iloc[0]
+        pos = row.appt_pos_doctor.iloc[0]
+        doctor_date_data = self.df[
+            (self.df.date == row.date.iloc[0]) &
+            (self.df.PROVIDER_NAME == doc)
+            ]
+        if len(
+                doctor_date_data[doctor_date_data.appt_pos_doctor == pos]
+                ) > 1:
+            time_between = 0
+        elif pos > 0:
+            prev_row = doctor_date_data[
+                doctor_date_data.appt_pos_doctor == pos-1
+                ]
+            time_between = row.schedd.iloc[0] - prev_row.schedd.iloc[0]
+        else:
+            time_between = None
+        return time_between
+
+    def time_to_decimal(self, ser):
+        return ser.dt.hour*60 + ser.dt.minute
+
+    def abbrev(self, x):
+        if x == 'TV Personality Disorder':
+            return 'tvp'
+        elif x == 'Saturday Night Fever':
+            return 'snf'
+        else:
+            return 'uc'
 
     def drop_redundant(
             self,
@@ -150,6 +193,6 @@ class Clinic(object):
         g = g.map(plt.scatter, xvar, yvar, edgecolor='w')
         g.add_legend(fontsize=10, markerscale=2)
         if file_name:
-            g.savefig('age_appt_cond.png', dpi=300)
+            g.savefig(file_name, dpi=300)
         else:
             return g

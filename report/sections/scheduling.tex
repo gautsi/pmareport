@@ -1,0 +1,27 @@
+\section{Smarter scheduling}
+\subsection{Analysis}
+PMA can be smarter about scheduling. Over the course of the year, 563 appointments were scheduled for less time than the shortest appointment time for the condition. In fact, there were 249 times that multiple appointments with the same doctor were scheduled for the same time.
+
+\subsection{Effect on the business} Poor scheduling means patient annoyance at longer wait times and increased stress on doctors, both of which can lead to fewer patients for the clinic.
+
+\begin{comment}
+{\tiny
+\begin{tabular}{lll}
+\toprule
+condition & min appointment time & \# appointments scheduled for less time than the minimum\\
+\midrule
+1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+}
+\end{comment}
+
+\subsection{A solution} I've developed a statistical model that predicts appointment duration from the age and condition of a patient. Tested on the data set, the model predicts within 5 minutes of the actual duration for 95\% of appointments. Using my model to inform scheduling will reduce waiting times for patients and the strain on doctors of attending to multiple patients at once.
+
+\begin{figure}[h]
+\centering
+\makebox[\textwidth][c]{\includegraphics[width = 0.7\textwidth]{plots/age_appt_cond}}
+\label{aac}
+\end{figure}
+
+\subsection{Questions}

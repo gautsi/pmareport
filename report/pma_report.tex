@@ -8,24 +8,36 @@
 \usepackage{enumerate}
 \usepackage{amsthm}
 \usepackage{amssymb}
-%\usepackage[pdftex]{graphicx}
+\usepackage[pdftex]{graphicx}
 \usepackage{verbatim}
 \usepackage[all]{xy}
 \usepackage{booktabs}
+\usepackage{bold-extra}
 %\usepackage{hyperref}
 %\usepackage{homework}
-%\usepackage[top=1.5in, bottom=1in, left=1.25in, right=1.25in]{geometry}
-
+\usepackage[top=0.5in, bottom=1in, left=1.2in, right=1.2in]{geometry}
+%\usepackage{titling}
 %\input{../../mydefns/gsDefns}
-
+%\setlength{\droptitle}{-10em}
 
 \begin{document}
 
-\title[PMA annual report]{Pseudopolis Medical Associates: an annual report}
-\date{\today}
-\author{Gautam Sisodia}
-\email{gautam.sisodia@gmail.com}
-\maketitle
+\begingroup
+  \centering
+  \large \scshape{Pseudopolis Medical Associates: an annual report}\\[1.5em]
+  \large Gautam Sisodia\par
+\endgroup
 
+%\title{Pseudopolis Medical Associates: an annual report}
+%\author{Gautam Sisodia}
+%\maketitle
+
+\input{sections/introduction}
+
+\input{sections/scheduling}
+
+\input{sections/burnout}
+
+\input{sections/questions}
 
 \end{document}
