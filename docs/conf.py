@@ -38,7 +38,8 @@ MOCK_MODULES = [
     'sklearn',
     'sklearn.naive_bayes',
     'sklearn.feature_extraction',
-    'seaborn'
+    'seaborn',
+    'matplotlib.pyplot'
     ]
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
