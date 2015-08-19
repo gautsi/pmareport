@@ -1,2 +1,4 @@
 wheel==0.24.0
 pandas==0.16.2
+seaborn==0.6.0
+matplotlib==1.4.3
