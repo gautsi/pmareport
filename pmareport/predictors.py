@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 The model used to predict appointment duration is a decision tree.
-The model is evaluated by the precentage of predicted times are within
+The model is evaluated by the precentage of predicted times that are within
 a threshold (5 minutes by default) of the actual duration.
 
 The class `DurationPredictor` splits the data into testing and training, builds
